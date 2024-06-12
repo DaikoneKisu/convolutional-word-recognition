@@ -19,8 +19,8 @@ np.set_printoptions(linewidth=200)
 AMOUNT_OF_LETTER_CATEGORIES = 27  # Numbers of letters
 amount_of_brightness = 255
 # @title Hyperparameters
-learning_rate = 0.002
-batch_size = 256
+learning_rate = 0.003
+batch_size = 64
 validation_split = 0.3
 
 
@@ -83,16 +83,15 @@ def train():
 
         model = keras.models.Sequential()
 
-        model.add(keras.layers.Flatten(input_shape=(image_pixels, image_pixels)))
-        model.add(keras.layers.Dense(units=256, activation="relu"))
-        model.add(keras.layers.Dropout(rate=0.2))
-        model.add(keras.layers.Dense(units=128, activation="relu"))
-        model.add(keras.layers.Dropout(rate=0.1))
-        model.add(keras.layers.Dense(units=64, activation="relu"))
-        model.add(keras.layers.Dropout(rate=0.1))
-        model.add(
-            keras.layers.Dense(units=AMOUNT_OF_LETTER_CATEGORIES, activation="softmax")
-        )
+        model.add(keras.layers.Conv2D(32, (3,3), activation="relu", padding="SAME", input_shape=(image_pixels, image_pixels, 1)))
+        model.add(keras.layers.Conv2D(64, (3,3), activation="relu", padding="SAME", input_shape=(image_pixels, image_pixels, 32)))
+        model.add(keras.layers.Conv2D(128, (4,4), activation="relu", padding="SAME", input_shape=(image_pixels, image_pixels, 64)))
+        model.add(keras.layers.MaxPooling2D(pool_size=(2,2)))
+        model.add(keras.layers.Dropout(rate=0.25))
+        model.add(keras.layers.Flatten())
+        model.add(keras.layers.Dense(units=128, activation='relu'))
+        model.add(keras.layers.Dropout(rate=0.25))
+        model.add(keras.layers.Dense(units=AMOUNT_OF_LETTER_CATEGORIES, activation='softmax'))
 
         model.compile(
             optimizer=keras.optimizers.Adam(learning_rate=input_learning_rate),
@@ -129,7 +128,7 @@ def train():
 
     my_model = create_model(learning_rate)
 
-    epochs = 30
+    epochs = 10
 
     # Train the model on the normalized training set.
     epochs, hist = train_model(
