@@ -1,6 +1,6 @@
 .venv
-model.keras
-drawing.jpg
+*.keras
+*.jpg
 build
 word_recognition.egg-info
 word_recognition/__pycache__
