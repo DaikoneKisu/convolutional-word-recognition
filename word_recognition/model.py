@@ -174,3 +174,13 @@ def test():
     # Evaluate against the test set.
     print("\n Evaluate the new model against the test set:")
     my_model.evaluate(x=test_x, y=test_y, batch_size=batch_size)
+
+def summary():
+    """summarize the model"""
+
+    my_model = keras.saving.load_model("model.keras", compile=True)
+
+    if my_model is None:
+        raise Exception("There is no model saved")
+
+    print(my_model.summary())
